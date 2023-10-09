@@ -6,6 +6,7 @@ authors = ["hitol <1126031033@qq.com>"]
 description = "easier to use kafka message"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/hitolz/simple-kafka/"
+documentation = "https://docs.rs/simple-kafka"
 
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
