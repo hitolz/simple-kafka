@@ -201,8 +201,8 @@ mod tests {
     async fn test_produce() {
         init_log();
         let topic: &str = "test-topic";
-        kafka_init::init_producers(get_kafka_config()).await;
-        kafka_init::init_consumers(get_kafka_config(),topic, message_handler).await;
+        kafka_init::init_producers(&get_kafka_config()).await;
+        kafka_init::init_consumers(&get_kafka_config(),topic, message_handler).await;
         println!("sending...");
         for i in 0..100 {
             let message = format!("test : {}", i);

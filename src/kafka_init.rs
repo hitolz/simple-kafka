@@ -15,13 +15,13 @@ use super::{kafka_producer, KafkaConsumerManager};
 // }
 
 /// 初始化生产者
-pub async fn init_producers(kafka_config: KafkaConfig) {
+pub async fn init_producers(kafka_config: &KafkaConfig) {
     kafka_producer::init(&kafka_config.brokers);
     info!("init producer done");
 }
 
 /// 初始化消费者
-pub async fn init_consumers<F>(kafka_config: KafkaConfig,topic: &str, func: F)
+pub async fn init_consumers<F>(kafka_config: &KafkaConfig,topic: &str, func: F)
 where
     F: 'static + Send,
     F: FnMut(KafkaMessage),
