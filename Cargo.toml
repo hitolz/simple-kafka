@@ -1,6 +1,6 @@
 [package]
 name = "simple-kafka"
-version = "0.0.3"
+version = "0.0.4"
 edition = "2021"
 authors = ["hitol <1126031033@qq.com>"]
 description = "easier to use kafka message"
