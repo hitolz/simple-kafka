@@ -1,9 +1,6 @@
 use tracing::info;
 
-use crate::{
-    settings::{KafkaConfig, SETTING},
-    KafkaMessage,
-};
+use crate::{KafkaConfig, KafkaMessage};
 
 use super::{kafka_producer, KafkaConsumerManager};
 
@@ -18,24 +15,17 @@ use super::{kafka_producer, KafkaConsumerManager};
 // }
 
 /// 初始化生产者
-pub async fn init_producers() {
-    let kafka_config: KafkaConfig = get_kafka_config();
+pub async fn init_producers(kafka_config: KafkaConfig) {
     kafka_producer::init(&kafka_config.brokers);
     info!("init producer done");
 }
 
-fn get_kafka_config() -> KafkaConfig {
-    let setting = &*SETTING;
-    setting.kafka_config.clone()
-}
-
 /// 初始化消费者
-pub async fn init_consumers<F>(topic: &str, func: F)
+pub async fn init_consumers<F>(kafka_config: KafkaConfig,topic: &str, func: F)
 where
     F: 'static + Send,
     F: FnMut(KafkaMessage),
 {
-    let kafka_config: KafkaConfig = get_kafka_config();
     let brokers = &kafka_config.brokers;
     let group_id = &kafka_config.group_id;
     let mut manager = KafkaConsumerManager::new(brokers.as_str(), group_id.as_str());

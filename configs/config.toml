@@ -1,3 +1,0 @@
-[kafka_config]
-brokers = "localhost:9092"
-group_id = "test_group"

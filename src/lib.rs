@@ -2,13 +2,11 @@
 pub mod kafka_init;
 /// 提供一个生产者，发送 kafka 消息使用
 pub mod kafka_producer;
-/// 配置信息，配置文件在根目录下的 configs/config.toml
-pub mod settings;
 
 use std::{error::Error, fmt::Display};
 
 use std::{collections::HashMap, sync::Arc};
-use settings::KafkaConfig;
+use serde_derive::Deserialize;
 use time::{macros::format_description, UtcOffset};
 use tracing::{info, warn};
 
@@ -19,6 +17,11 @@ use rdkafka::{
     ClientConfig, Message,
 };
 
+#[derive(Deserialize, Default, Debug, Clone)]
+pub struct KafkaConfig {
+    pub brokers: String,
+    pub group_id: String,
+}
 
 struct KafkaConsumer {
     topic: String,
@@ -180,41 +183,30 @@ fn init_log() {
 #[cfg(test)]
 mod tests {
 
-    // use chrono::Local;
-
-    // use crate::common::date_utils::DateUtil;
-    // use crate::plugins::log as DinosaurLog;
-
     use crate::{
-        init_log,
-        settings::SETTING,
-        {kafka_init, kafka_producer, message_handler, KafkaConsumerManager},
+        init_log, KafkaConfig, {kafka_init, kafka_producer, message_handler},
     };
-    use std::thread;
-    use std::time::Duration;
-
+    
     // use super::kafka::KafkaConfig;
 
-    #[tokio::test]
-    async fn test_produce() {
-        // DinosaurLog::log_init();
-        init_log();
-        let topic: &str = "test-topic";
-        kafka_init::init_producers().await;
-        println!("send");
-        for i in 0..100 {
-            // let dt = DateUtil::<Local>::local().get_now_time_str();
-            let message = format!("test : {}", i);
-            let _ = kafka_producer::send(topic, "", message.as_bytes()).await;
-        }
+    fn get_kafka_config() -> KafkaConfig {
+        let kafka_config = KafkaConfig {
+            brokers: "127.0.0.1:9092".to_string(),
+            group_id: "test_group".to_string(),
+        };
+        kafka_config
     }
 
     #[tokio::test]
-    async fn test_consume() {
+    async fn test_produce() {
         init_log();
         let topic: &str = "test-topic";
-        kafka_init::init_consumers(topic, message_handler).await;
-
-        thread::sleep(Duration::from_secs(10));
+        kafka_init::init_producers(get_kafka_config()).await;
+        kafka_init::init_consumers(get_kafka_config(),topic, message_handler).await;
+        println!("sending...");
+        for i in 0..100 {
+            let message = format!("test : {}", i);
+            let _ = kafka_producer::send(topic, "", message.as_bytes()).await;
+        }
     }
 }
