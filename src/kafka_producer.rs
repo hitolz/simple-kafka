@@ -1,9 +1,9 @@
 use std::error::Error;
 use std::sync::{Mutex, Arc};
 
+use log::info;
 use rdkafka::producer::{FutureProducer, FutureRecord};
 use rdkafka::ClientConfig;
-use tracing::info;
 use lazy_static::lazy_static;
 
 use crate::KafkaError;

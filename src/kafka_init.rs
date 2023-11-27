@@ -1,5 +1,4 @@
-use tracing::info;
-
+use log::info;
 use crate::{KafkaConfig, KafkaMessage};
 
 use super::{kafka_producer, KafkaConsumerManager};

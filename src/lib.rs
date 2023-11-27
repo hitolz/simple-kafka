@@ -5,10 +5,9 @@ pub mod kafka_producer;
 
 use std::{error::Error, fmt::Display};
 
-use std::{collections::HashMap, sync::Arc};
+use log::{info, warn};
 use serde_derive::Deserialize;
-use time::{macros::format_description, UtcOffset};
-use tracing::{info, warn};
+use std::{collections::HashMap, sync::Arc};
 
 use rdkafka::{
     config::RDKafkaLogLevel,
@@ -169,24 +168,24 @@ pub fn message_handler(message: KafkaMessage) {
         );
     }
 }
-#[allow(dead_code)]
-fn init_log() {
-    use tracing_subscriber::fmt::time::OffsetTime;
-    let local_time = OffsetTime::new(
-        UtcOffset::from_hms(8, 0, 0).unwrap(),
-        format_description!("[year]-[month]-[day] [hour]:[minute]:[second].[subsecond digits:3]"),
-    );
+// #[allow(dead_code)]
+// fn init_log() {
+//     use tracing_subscriber::fmt::time::OffsetTime;
+//     let local_time = OffsetTime::new(
+//         UtcOffset::from_hms(8, 0, 0).unwrap(),
+//         format_description!("[year]-[month]-[day] [hour]:[minute]:[second].[subsecond digits:3]"),
+//     );
 
-    tracing_subscriber::fmt().with_timer(local_time).init();
-}
+//     tracing_subscriber::fmt().with_timer(local_time).init();
+// }
 
 #[cfg(test)]
 mod tests {
 
     use crate::{
-        init_log, KafkaConfig, {kafka_init, kafka_producer, message_handler},
+        KafkaConfig, {kafka_init, kafka_producer, message_handler},
     };
-    
+
     // use super::kafka::KafkaConfig;
 
     fn get_kafka_config() -> KafkaConfig {
@@ -199,10 +198,10 @@ mod tests {
 
     #[tokio::test]
     async fn test_produce() {
-        init_log();
+        // init_log();
         let topic: &str = "test-topic";
         kafka_init::init_producers(&get_kafka_config()).await;
-        kafka_init::init_consumers(&get_kafka_config(),topic, message_handler).await;
+        kafka_init::init_consumers(&get_kafka_config(), topic, message_handler).await;
         println!("sending...");
         for i in 0..100 {
             let message = format!("test : {}", i);
