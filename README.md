@@ -43,6 +43,13 @@ let _init_task = tokio::spawn(async {
 
 如果有多个 topic 需要进行消费，需要 init_consumers 多次。
 
+发送消息
+```rust
+// let _= kafka_producer::send(topic,"key","测试下kafka消息1111".as_bytes()).await;
+// let _= kafka_producer::send_result(topic,"key","测试下kafka消息1111".as_bytes()).await;
+let _= kafka_producer::send_timeout(topic,"key","测试下kafka消息1111".as_bytes(),Duration::from_secs(3)).await;
+```
+
 提供了 test_api，
 
 在程序启动之后，可以通过 http://127.0.0.1:8088/test/send 进行发送测试。
